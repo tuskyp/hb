@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>С Днём Рождения!</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #ffebee;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+        
+        .container {
+            text-align: center;
+            position: relative;
+        }
+        
+        .heart {
+            position: relative;
+            width: 100px;
+            height: 90px;
+            animation: heartbeat 1.5s ease-in-out infinite both, appear 2s ease-out;
+            transform: scale(0);
+            margin: 0 auto;
+        }
+        
+        .heart:before, .heart:after {
+            position: absolute;
+            content: "";
+            left: 50px;
+            top: 0;
+            width: 50px;
+            height: 80px;
+            background: #ff5252;
+            border-radius: 50px 50px 0 0;
+            transform: rotate(-45deg);
+            transform-origin: 0 100%;
+        }
+        
+        .heart:after {
+            left: 0;
+            transform: rotate(45deg);
+            transform-origin: 100% 100%;
+        }
+        
+        .message {
+            margin-top: 30px;
+            font-size: 24px;
+            color: #d32f2f;
+            opacity: 0;
+            animation: fadeIn 2s ease-out 1s forwards;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #f44336;
+            opacity: 0;
+        }
+        
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            25% { transform: scale(1.1); }
+            50% { transform: scale(1); }
+            75% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes appear {
+            0% { transform: scale(0); opacity: 0; }
+            80% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="heart"></div>
+        <div class="message">С Днём Рождения!</div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Создаем конфетти
+            createConfetti();
+            
+            // Добавляем дополнительные эффекты через 3 секунды
+            setTimeout(() => {
+                createHearts();
+                document.querySelector('.message').textContent = 
+                    'С Днём Рождения!\nПусть сбываются мечты!\nИ исполняются желания!';
+            }, 3000);
+        });
+        
+        function createConfetti() {
+            const colors = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3', '#03a9f4', '#00bcd4', '#009688', '#4CAF50', '#8BC34A', '#CDDC39', '#FFEB3B', '#FFC107', '#FF9800', '#FF5722'];
+            
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.left = Math.random() * window.innerWidth + 'px';
+                confetti.style.top = -10 + 'px';
+                confetti.style.transform = 'rotate(' + Math.random() * 360 + 'deg)';
+                document.body.appendChild(confetti);
+                
+                animateConfetti(confetti);
+            }
+        }
+        
+        function animateConfetti(element) {
+            const startTime = Date.now();
+            const duration = 3000 + Math.random() * 5000;
+            const startLeft = parseFloat(element.style.left);
+            const drift = Math.random() * 200 - 100;
+            
+            const animation = () => {
+                const elapsed = Date.now() - startTime;
+                const progress = elapsed / duration;
+                
+                if (progress >= 1) {
+                    element.style.top = -10 + 'px';
+                    element.style.left = Math.random() * window.innerWidth + 'px';
+                    animateConfetti(element);
+                    return;
+                }
+                
+                const y = progress * (window.innerHeight + 20);
+                const x = startLeft + drift * Math.sin(progress * Math.PI * 2);
+                
+                element.style.top = y + 'px';
+                element.style.left = x + 'px';
+                element.style.opacity = Math.sin(progress * Math.PI);
+                
+                requestAnimationFrame(animation);
+            };
+            
+            setTimeout(() => {
+                element.style.opacity = 1;
+                requestAnimationFrame(animation);
+            }, Math.random() * 2000);
+        }
+        
+        function createHearts() {
+            setInterval(() => {
+                const heart = document.createElement('div');
+                heart.innerHTML = '❤️';
+                heart.style.position = 'absolute';
+                heart.style.fontSize = (20 + Math.random() * 20) + 'px';
+                heart.style.left = Math.random() * window.innerWidth + 'px';
+                heart.style.top = window.innerHeight + 'px';
+                heart.style.opacity = 0.7;
+                heart.style.transform = 'translateY(0)';
+                document.body.appendChild(heart);
+                
+                const animationDuration = 3000 + Math.random() * 3000;
+                const drift = Math.random() * 100 - 50;
+                const startLeft = parseFloat(heart.style.left);
+                
+                const startTime = Date.now();
+                
+                const animate = () => {
+                    const elapsed = Date.now() - startTime;
+                    const progress = elapsed / animationDuration;
+                    
+                    if (progress >= 1) {
+                        heart.remove();
+                        return;
+                    }
+                    
+                    const y = window.innerHeight - progress * (window.innerHeight + 50);
+                    const x = startLeft + drift * Math.sin(progress * Math.PI);
+                    const opacity = 0.7 * (1 - progress);
+                    const scale = 1 + progress * 0.5;
+                    
+                    heart.style.top = y + 'px';
+                    heart.style.left = x + 'px';
+                    heart.style.opacity = opacity;
+                    heart.style.transform = `translateY(0) scale(${scale})`;
+                    
+                    requestAnimationFrame(animate);
+                };
+                
+                requestAnimationFrame(animate);
+            }, 300);
+        }
+    </script>
+</body>
+</html>
